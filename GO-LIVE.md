@@ -52,7 +52,15 @@ on conflict (id) do update set role = 'admin';
 6. Open lead detail → Assign partner
 7. Partner user (future): link `connect_profiles.partner_id` to partner org
 
-## 5. Auto-matching (v0.2)
+## 5. Campaigns (v0.2)
+
+1. Open `/dashboard/campaigns` → **New campaign**
+2. Set platform + UTM tags (source, medium, campaign)
+3. Copy the generated `/apply?...` tracking URL into Facebook/Google ads
+4. Update **Spend** on each campaign row as ads run
+5. Review leads, qualified count, conversion rate, and cost per lead
+
+## 6. Auto-matching (v0.2)
 
 1. Approve a partner in `/dashboard/partners`
 2. Open `/dashboard/matching` → **Add rule**
@@ -62,12 +70,24 @@ on conflict (id) do update set role = 'admin';
 
 Debt assistance rules only match **verified** partners.
 
-## 6. Health check
+## 7. Premium features (v0.3)
+
+1. **Analytics** — `/dashboard/analytics` funnel, category, province, 7-day chart
+2. **Wallet billing** — `/dashboard/revenue` deposit to partner wallets; auto-charge on delivery
+3. **Lead export** — `/dashboard/leads` search, filter, CSV export
+4. **Notifications** — bell icon in admin dashboard header
+5. **Partner onboarding** — `/partner/apply` self-service application
+6. **Partner portal** — `/partner/billing`, `/partner/webhooks`
+7. **Webhooks** — HMAC-signed `lead.delivered` events to partner endpoints
+
+Migration `0004_connect_premium` applied to production.
+
+## 8. Health check
 
 `GET /api/health` should return `{ ok: true, supabaseConfigured: true }`
 
 ## Database status
 
-Connect schema applied to production (migrations `connect_foundation_*`, `connect_auth_and_partner_updates`).
+Connect schema applied to production (migrations `0001`–`0004`).
 
 Categories seeded: Personal Finance, Debt Assistance, Credit Help, Business Funding.

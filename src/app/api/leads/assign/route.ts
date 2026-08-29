@@ -19,14 +19,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Partner not active" }, { status: 400 });
   }
 
+  const { data: lead } = await admin.from("connect_leads").select("lead_reference").eq("id", leadId).maybeSingle();
+
   const delivered = await deliverLeadToPartner(admin, leadId, {
     partnerId,
     partnerName: partner.business_name,
     ruleId: null,
     price: Number(price ?? 100),
-  });
+  }, { leadReference: lead?.lead_reference });
 
-  if (!delivered) return NextResponse.json({ error: "Assignment failed" }, { status: 500 });
+  if (!delivered) return NextResponse.json({ error: "Assignment failed (check partner wallet balance)" }, { status: 500 });
 
   await admin.from("connect_audit_logs").insert({
     action: "lead.assigned",

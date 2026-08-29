@@ -13,6 +13,7 @@ import {
   BarChart3,
   LogOut,
 } from "lucide-react";
+import { NotificationBell } from "@/components/dashboard/notification-bell";
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -36,6 +37,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <h1 className="text-lg font-semibold text-white">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-3">
+            <NotificationBell />
             <Link href="/" className="text-sm text-[#8c8c8c] hover:text-white">
               Public site
             </Link>

@@ -39,9 +39,12 @@ export function PublicHero() {
         <p className="mt-2 text-sm text-[#8c8c8c]">
           One enquiry. Relevant options. No guaranteed approval claims.
         </p>
-        <div className="mt-8">
+        <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild size="lg">
             <Link href="/apply">Start your enquiry</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/login?next=/partner/apply">Become a partner</Link>
           </Button>
         </div>
       </div>

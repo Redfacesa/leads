@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createServiceClient } from "@/lib/supabase/server";
 import { buildLeadRecord, normalizeSaPhone } from "@/lib/scoring";
 import { autoMatchAndDeliver } from "@/lib/matching/engine";
+import { resolveLeadAttribution } from "@/lib/campaigns/attribution";
 import { CONSENT_TEXT_V01 } from "@/lib/utils";
 
 const payloadSchema = z.object({
@@ -64,14 +65,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: source } = await admin
-      .from("connect_sources")
-      .select("id")
-      .eq("type", "organic")
-      .limit(1)
-      .maybeSingle();
+    const { sourceId, campaignId } = await resolveLeadAttribution(admin, {
+      utmSource: payload.utmSource,
+      utmMedium: payload.utmMedium,
+      utmCampaign: payload.utmCampaign,
+    });
 
-    const leadRecord = buildLeadRecord(payload, category.id, source?.id ?? null);
+    const leadRecord = {
+      ...buildLeadRecord(payload, category.id, sourceId),
+      campaign_id: campaignId,
+    };
 
     const { data: lead, error: leadErr } = await admin
       .from("connect_leads")
@@ -105,6 +108,9 @@ export async function POST(req: NextRequest) {
       entity_id: lead.id,
       new_data: { lead_reference: lead.lead_reference, status: lead.status, score: lead.lead_score },
     });
+
+    const { notifyAdminNewLead } = await import("@/lib/notifications/notify");
+    await notifyAdminNewLead(admin, lead.lead_reference, lead.id);
 
     const autoMatch = await autoMatchAndDeliver(
       admin,

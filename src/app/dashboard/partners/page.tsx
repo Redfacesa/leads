@@ -52,6 +52,17 @@ export default function PartnersPage() {
     load();
   }
 
+  async function depositQuick(partnerId: string) {
+    const amount = prompt("Deposit amount (ZAR):");
+    if (!amount || Number(amount) <= 0) return;
+    await fetch("/api/billing/deposit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ partnerId, amount: Number(amount), reference: "admin-quick-deposit" }),
+    });
+    load();
+  }
+
   return (
     <DashboardShell>
       <div className="space-y-6">
@@ -106,9 +117,14 @@ export default function PartnersPage() {
                   <td className="px-4 py-3"><StatusBadge status={p.verification_status} /></td>
                   <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
                   <td className="px-4 py-3">
-                    {p.status === "pending" && (
-                      <Button size="sm" onClick={() => approvePartner(p.id)}>Approve</Button>
-                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {p.status === "pending" && (
+                        <Button size="sm" onClick={() => approvePartner(p.id)}>Approve</Button>
+                      )}
+                      {p.status === "active" && (
+                        <Button size="sm" variant="outline" onClick={() => depositQuick(p.id)}>Top up wallet</Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

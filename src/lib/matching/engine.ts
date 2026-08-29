@@ -1,5 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { relationOne } from "@/lib/supabase/relations";
+import { chargeLeadDelivery } from "@/lib/billing/wallet";
+import { notifyPartnerLeadDelivered } from "@/lib/notifications/notify";
+import { enqueuePartnerWebhooks } from "@/lib/webhooks/deliver";
 import { parseIncomeMin, parseIncomeMax } from "./income";
 
 export interface MatchableLead {
@@ -139,7 +142,8 @@ async function partnerCoversProvince(
 export async function deliverLeadToPartner(
   admin: SupabaseClient,
   leadId: string,
-  match: MatchResult
+  match: MatchResult,
+  meta?: { leadReference?: string }
 ): Promise<{ assignmentId: string } | null> {
   const { data: assignment, error } = await admin
     .from("connect_lead_assignments")
@@ -156,10 +160,16 @@ export async function deliverLeadToPartner(
 
   if (error || !assignment) return null;
 
+  const charge = await chargeLeadDelivery(admin, match.partnerId, leadId, assignment.id, match.price);
+  if (!charge.ok) {
+    await admin.from("connect_lead_assignments").delete().eq("id", assignment.id);
+    return null;
+  }
+
   await admin.from("connect_leads").update({ status: "delivered" }).eq("id", leadId);
 
   await admin.from("connect_audit_logs").insert({
-    action: "lead.auto_matched",
+    action: "lead.delivered",
     entity_type: "connect_lead_assignments",
     entity_id: assignment.id,
     new_data: {
@@ -168,7 +178,17 @@ export async function deliverLeadToPartner(
       rule_id: match.ruleId,
       partner_name: match.partnerName,
       price: match.price,
+      balance: charge.balance,
     },
+  });
+
+  const ref = meta?.leadReference ?? leadId;
+  await notifyPartnerLeadDelivered(admin, match.partnerId, ref, leadId);
+  await enqueuePartnerWebhooks(admin, match.partnerId, "lead.delivered", {
+    lead_id: leadId,
+    lead_reference: ref,
+    partner_id: match.partnerId,
+    price: match.price,
   });
 
   return { assignmentId: assignment.id };
@@ -184,6 +204,8 @@ export async function autoMatchAndDeliver(
   const match = await findMatchingPartner(admin, lead, { requiresRegulatedPartner });
   if (!match) return null;
 
-  const delivered = await deliverLeadToPartner(admin, lead.id, match);
+  const delivered = await deliverLeadToPartner(admin, lead.id, match, {
+    leadReference: lead.lead_reference,
+  });
   return delivered ? match : null;
 }

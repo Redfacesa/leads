@@ -15,6 +15,8 @@ export default function PartnerLayout({ children }: { children: ReactNode }) {
             <nav className="flex items-center gap-4 text-sm">
               <Link href="/partner" className="text-[#bdbdbd] hover:text-white">Overview</Link>
               <Link href="/partner/leads" className="text-[#bdbdbd] hover:text-white">Leads</Link>
+              <Link href="/partner/billing" className="text-[#bdbdbd] hover:text-white">Billing</Link>
+              <Link href="/partner/webhooks" className="text-[#bdbdbd] hover:text-white">Webhooks</Link>
               <Link href="/" className="text-[#bdbdbd] hover:text-white">Public site</Link>
             </nav>
           </div>

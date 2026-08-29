@@ -11,6 +11,7 @@ export default function HomePage() {
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/apply" className="text-[#bdbdbd] hover:text-white">Apply</Link>
+            <Link href="/login?next=/partner/apply" className="text-[#bdbdbd] hover:text-white">Partners</Link>
             <Link href="/admin" className="text-[#bdbdbd] hover:text-white">Admin</Link>
             <Link href="/login" className="text-[#bdbdbd] hover:text-white">Sign in</Link>
           </nav>

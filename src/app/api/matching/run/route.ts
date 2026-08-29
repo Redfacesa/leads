@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth/admin";
 import { createServiceClient } from "@/lib/supabase/server";
 import { autoMatchAndDeliver } from "@/lib/matching/engine";
+import { relationOne } from "@/lib/supabase/relations";
 
 export async function POST(req: NextRequest) {
   const auth = await requireAdminSession();
@@ -19,8 +20,11 @@ export async function POST(req: NextRequest) {
 
   if (error || !lead) return NextResponse.json({ error: "Lead not found" }, { status: 404 });
 
-  const regulated = !!(lead as { connect_lead_categories?: { requires_regulated_partner: boolean } })
-    .connect_lead_categories?.requires_regulated_partner;
+  const category = relationOne(
+    (lead as { connect_lead_categories?: { requires_regulated_partner: boolean } | { requires_regulated_partner: boolean }[] })
+      .connect_lead_categories
+  );
+  const regulated = !!category?.requires_regulated_partner;
 
   const match = await autoMatchAndDeliver(admin, lead, regulated);
   if (!match) return NextResponse.json({ ok: false, matched: false });

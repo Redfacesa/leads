@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { relationOne } from "@/lib/supabase/relations";
 import { parseIncomeMin, parseIncomeMax } from "./income";
 
 export interface MatchableLead {
@@ -22,12 +23,20 @@ export interface PartnerRuleRow {
   daily_limit: number | null;
   conditions: Record<string, unknown> | null;
   active: boolean;
-  connect_partners?: {
-    id: string;
-    business_name: string;
-    status: string;
-    verification_status: string;
-  } | null;
+  connect_partners?:
+    | {
+        id: string;
+        business_name: string;
+        status: string;
+        verification_status: string;
+      }
+    | {
+        id: string;
+        business_name: string;
+        status: string;
+        verification_status: string;
+      }[]
+    | null;
 }
 
 export interface MatchResult {
@@ -68,43 +77,44 @@ export async function findMatchingPartner(
   const incomeMin = parseIncomeMin(lead.income_band);
   const incomeMax = parseIncomeMax(lead.income_band);
 
-  for (const raw of rules as PartnerRuleRow[]) {
-    const partner = raw.connect_partners;
+  for (const raw of rules) {
+    const rule = raw as PartnerRuleRow;
+    const partner = relationOne(rule.connect_partners);
     if (!partner || partner.status !== "active") continue;
 
     if (options?.requiresRegulatedPartner && partner.verification_status !== "verified") {
       continue;
     }
 
-    if (raw.category_id && raw.category_id !== lead.category_id) continue;
+    if (rule.category_id && rule.category_id !== lead.category_id) continue;
 
-    const requiredProvince = ruleProvince(raw);
+    const requiredProvince = ruleProvince(rule);
     if (requiredProvince && requiredProvince !== lead.province) continue;
 
-    const covered = await partnerCoversProvince(admin, raw.partner_id, lead.province);
+    const covered = await partnerCoversProvince(admin, rule.partner_id, lead.province);
     if (!covered) continue;
 
-    if (lead.lead_score < ruleMinScore(raw)) continue;
+    if (lead.lead_score < ruleMinScore(rule)) continue;
 
-    if (raw.min_income != null && incomeMax != null && incomeMax < Number(raw.min_income)) continue;
-    if (raw.max_income != null && incomeMin != null && incomeMin > Number(raw.max_income)) continue;
+    if (rule.min_income != null && incomeMax != null && incomeMax < Number(rule.min_income)) continue;
+    if (rule.max_income != null && incomeMin != null && incomeMin > Number(rule.max_income)) continue;
 
-    if (raw.daily_limit != null) {
+    if (rule.daily_limit != null) {
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
       const { count } = await admin
         .from("connect_lead_assignments")
         .select("id", { count: "exact", head: true })
-        .eq("partner_id", raw.partner_id)
+        .eq("partner_id", rule.partner_id)
         .gte("assigned_at", startOfDay.toISOString());
-      if ((count ?? 0) >= raw.daily_limit) continue;
+      if ((count ?? 0) >= rule.daily_limit) continue;
     }
 
     return {
-      partnerId: raw.partner_id,
+      partnerId: rule.partner_id,
       partnerName: partner.business_name,
-      ruleId: raw.id,
-      price: Number(raw.lead_price ?? 100),
+      ruleId: rule.id,
+      price: Number(rule.lead_price ?? 100),
     };
   }
 

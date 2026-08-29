@@ -34,8 +34,14 @@ cp .env.example .env.local
 ### 2. Create Supabase project
 
 1. Create a new project at [supabase.com](https://supabase.com) (recommended: dedicated Connect project)
-2. Copy project URL, anon key, and service role key into `.env.local`
-3. Set `CONNECT_ADMIN_EMAILS=your@email.com`
+2. Copy project URL, anon key, and service role key
+3. Use env templates:
+   - Local: `cp env/development.env.example .env.local`
+   - Vercel Production: `env/production.env.example`
+   - Vercel Preview: `env/preview.env.example`
+4. Set `CONNECT_ADMIN_EMAILS=info@redfacepay.co.za`
+
+See **`env/README.md`** for full Vercel setup.
 
 ### 3. Apply database migrations
 
@@ -119,9 +125,11 @@ Partner contacts consumer (off-platform v0.1)
 ## Deploy to Vercel
 
 1. Import `Redfacesa/leads` in Vercel
-2. Add environment variables from `.env.example`
-3. Set production URL in Supabase Auth redirect URLs
-4. Apply migrations to production Supabase
+2. Add environment variables from `env/production.env.example` (Production scope)
+3. Add preview variables from `env/preview.env.example` (Preview scope)
+4. Set production domain: `connect.redfacepay.co.za`
+5. Configure Supabase Auth redirect URLs (see `env/README.md`)
+6. Apply migrations to production Supabase
 
 ## License
 

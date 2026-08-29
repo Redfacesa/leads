@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,7 @@ export default function PartnersPage() {
     load();
   }, []);
 
-  async function createPartner(e: React.FormEvent) {
+  async function createPartner(e: FormEvent) {
     e.preventDefault();
     await fetch("/api/partners", {
       method: "POST",

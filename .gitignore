@@ -10,6 +10,13 @@ out/
 # Env
 .env
 .env*.local
+!.env.example
+
+# Vercel pulled secrets (never commit)
+.env.local
+.env.development.local
+.env.preview.local
+.env.production.local
 
 # Debug
 npm-debug.log*

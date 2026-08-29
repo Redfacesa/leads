@@ -3,12 +3,23 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import type { ConnectLead } from "@/lib/types";
+import type { ConnectLead, DashboardStats } from "@/lib/types";
 
-async function getStats() {
+export const dynamic = "force-dynamic";
+
+async function getStats(): Promise<DashboardStats> {
   const supabase = await createClient();
   const { data } = await supabase.rpc("connect_dashboard_stats");
-  return data ?? { total_leads: 0, new_today: 0, qualified: 0, partners: 0, converted: 0 };
+  const fallback: DashboardStats = { total_leads: 0, new_today: 0, qualified: 0, partners: 0, converted: 0 };
+  if (!data || typeof data !== "object") return fallback;
+  const row = data as Record<string, unknown>;
+  return {
+    total_leads: Number(row.total_leads ?? 0),
+    new_today: Number(row.new_today ?? 0),
+    qualified: Number(row.qualified ?? 0),
+    partners: Number(row.partners ?? 0),
+    converted: Number(row.converted ?? 0),
+  };
 }
 
 async function getRecentLeads(): Promise<ConnectLead[]> {

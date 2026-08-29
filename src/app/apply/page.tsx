@@ -4,6 +4,8 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { LeadApplicationForm } from "@/components/leads/lead-application-form";
 import type { ConnectLeadCategory } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 async function getCategories(): Promise<ConnectLeadCategory[]> {
   try {
     const admin = createServiceClient();

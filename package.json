@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "supabase db push",
-    "db:status": "supabase migration list"
+    "db:status": "supabase migration list",
+    "env:pull": "vercel env pull .env.local --environment=development",
+    "env:pull:preview": "vercel env pull .env.local --environment=preview",
+    "env:pull:production": "vercel env pull .env.local --environment=production"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -23,7 +26,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
-    "next": "15.3.3",
+    "next": "15.3.8",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwind-merge": "^3.3.0",
@@ -36,7 +39,7 @@
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "eslint": "^9.27.0",
-    "eslint-config-next": "15.3.3",
+    "eslint-config-next": "15.3.8",
     "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3"
   }

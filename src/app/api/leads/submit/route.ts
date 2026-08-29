@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 import { z } from "zod";
 import { createServiceClient } from "@/lib/supabase/server";
 import { buildLeadRecord, normalizeSaPhone } from "@/lib/scoring";
+import { autoMatchAndDeliver } from "@/lib/matching/engine";
 import { CONSENT_TEXT_V01 } from "@/lib/utils";
 
 const payloadSchema = z.object({
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     const { data: category, error: catErr } = await admin
       .from("connect_lead_categories")
-      .select("id, slug, name")
+      .select("id, slug, name, requires_regulated_partner")
       .eq("slug", payload.categorySlug)
       .eq("active", true)
       .maybeSingle();
@@ -105,11 +106,27 @@ export async function POST(req: NextRequest) {
       new_data: { lead_reference: lead.lead_reference, status: lead.status, score: lead.lead_score },
     });
 
+    const autoMatch = await autoMatchAndDeliver(
+      admin,
+      {
+        id: lead.id,
+        category_id: category.id,
+        province: payload.province,
+        lead_score: lead.lead_score,
+        income_band: payload.incomeBand,
+        status: lead.status,
+        lead_reference: lead.lead_reference,
+      },
+      category.requires_regulated_partner
+    );
+
     return NextResponse.json({
       ok: true,
       leadReference: lead.lead_reference,
-      status: lead.status,
+      status: autoMatch ? "delivered" : lead.status,
       score: lead.lead_score,
+      matched: !!autoMatch,
+      partnerName: autoMatch?.partnerName ?? null,
     });
   } catch (e) {
     console.error(e);

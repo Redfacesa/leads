@@ -52,7 +52,17 @@ on conflict (id) do update set role = 'admin';
 6. Open lead detail → Assign partner
 7. Partner user (future): link `connect_profiles.partner_id` to partner org
 
-## 5. Health check
+## 5. Auto-matching (v0.2)
+
+1. Approve a partner in `/dashboard/partners`
+2. Open `/dashboard/matching` → **Add rule**
+3. Set partner, category, province, min score (default 70), price
+4. Submit a test lead at `/apply`
+5. If a rule matches, lead status becomes **delivered** automatically
+
+Debt assistance rules only match **verified** partners.
+
+## 6. Health check
 
 `GET /api/health` should return `{ ok: true, supabaseConfigured: true }`
 

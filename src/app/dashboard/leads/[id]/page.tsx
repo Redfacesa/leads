@@ -57,6 +57,20 @@ export default function LeadDetailPage() {
     window.location.reload();
   }
 
+  async function runAutoMatch() {
+    const res = await fetch("/api/matching/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ leadId: params.id }),
+    });
+    const data = await res.json();
+    if (data.matched) {
+      window.location.reload();
+      return;
+    }
+    alert("No matching rule found for this lead.");
+  }
+
   if (loading) {
     return (
       <DashboardShell>
@@ -105,12 +119,13 @@ export default function LeadDetailPage() {
             <p className="text-sm text-[#8c8c8c]">This is a lead quality score, not a credit score.</p>
             <div className="flex flex-wrap gap-2">
               <Button size="sm" variant="outline" onClick={() => updateStatus("qualified")}>Mark qualified</Button>
+              <Button size="sm" variant="outline" onClick={runAutoMatch}>Run auto-match</Button>
               <Button size="sm" variant="outline" onClick={() => updateStatus("rejected")}>Reject</Button>
               <Button size="sm" variant="outline" onClick={() => updateStatus("duplicate")}>Duplicate</Button>
             </div>
 
             <div className="border-t border-[#262626] pt-4 space-y-3">
-              <h4 className="font-medium text-white">Assign partner (manual v0.1)</h4>
+              <h4 className="font-medium text-white">Assign partner manually</h4>
               <div>
                 <Label>Partner</Label>
                 <select

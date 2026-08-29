@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth/admin";
 import { createServiceClient } from "@/lib/supabase/server";
+import { deliverLeadToPartner } from "@/lib/matching/engine";
 
 export async function POST(req: NextRequest) {
   const auth = await requireAdminSession();
@@ -13,35 +14,26 @@ export async function POST(req: NextRequest) {
 
   const admin = createServiceClient();
 
-  const { data: partner } = await admin.from("connect_partners").select("id, status").eq("id", partnerId).maybeSingle();
+  const { data: partner } = await admin.from("connect_partners").select("id, status, business_name").eq("id", partnerId).maybeSingle();
   if (!partner || partner.status !== "active") {
     return NextResponse.json({ error: "Partner not active" }, { status: 400 });
   }
 
-  const { data: assignment, error } = await admin
-    .from("connect_lead_assignments")
-    .insert({
-      lead_id: leadId,
-      partner_id: partnerId,
-      status: "delivered",
-      price: price ?? 100,
-      delivered_at: new Date().toISOString(),
-    })
-    .select("id")
-    .single();
+  const delivered = await deliverLeadToPartner(admin, leadId, {
+    partnerId,
+    partnerName: partner.business_name,
+    ruleId: null,
+    price: Number(price ?? 100),
+  });
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  await admin.from("connect_leads").update({ status: "delivered" }).eq("id", leadId);
+  if (!delivered) return NextResponse.json({ error: "Assignment failed" }, { status: 500 });
 
   await admin.from("connect_audit_logs").insert({
     action: "lead.assigned",
     entity_type: "connect_lead_assignments",
-    entity_id: assignment.id,
-    new_data: { lead_id: leadId, partner_id: partnerId },
+    entity_id: delivered.assignmentId,
+    new_data: { lead_id: leadId, partner_id: partnerId, manual: true },
   });
 
-  return NextResponse.json({ ok: true, assignmentId: assignment.id });
+  return NextResponse.json({ ok: true, assignmentId: delivered.assignmentId });
 }

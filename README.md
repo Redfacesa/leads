@@ -56,7 +56,7 @@ Or manually:
 
 ```sql
 insert into public.connect_profiles (id, email, role)
-select id, email, 'admin' from auth.users where email = 'admin@redfacepay.co.za'
+select id, email, 'admin' from auth.users where email = 'info@redfacepay.co.za'
 on conflict (id) do update set role = 'admin';
 ```
 

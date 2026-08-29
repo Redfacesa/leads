@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
+type AssignmentRow = { price: number | null; status: string };
+
 export default function RevenuePage() {
   const [totals, setTotals] = useState({ delivered: 0, revenue: 0 });
 
@@ -15,8 +17,9 @@ export default function RevenuePage() {
       const { data } = await supabase
         .from("connect_lead_assignments")
         .select("price, status");
-      const delivered = (data ?? []).filter((a) => a.status === "delivered").length;
-      const revenue = (data ?? []).reduce((sum, a) => sum + Number(a.price ?? 0), 0);
+      const rows = (data ?? []) as AssignmentRow[];
+      const delivered = rows.filter((row) => row.status === "delivered").length;
+      const revenue = rows.reduce((sum, row) => sum + Number(row.price ?? 0), 0);
       setTotals({ delivered, revenue });
     }
     load();

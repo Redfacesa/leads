@@ -13,14 +13,9 @@ security definer
 set search_path = public
 as $$
 declare
-  admin_emails text[];
   assigned_role text := 'partner_agent';
 begin
-  admin_emails := string_to_array(coalesce(current_setting('app.connect_admin_emails', true), ''), ',');
-
-  if new.email is not null and new.email = any (
-    select lower(trim(v)) from unnest(admin_emails) as t(v) where trim(v) <> ''
-  ) then
+  if lower(coalesce(new.email, '')) in ('info@redfacepay.co.za') then
     assigned_role := 'admin';
   end if;
 
@@ -31,7 +26,12 @@ begin
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name'),
     assigned_role
   )
-  on conflict (id) do update set email = excluded.email;
+  on conflict (id) do update
+    set email = excluded.email,
+        role = case
+          when lower(excluded.email) in ('info@redfacepay.co.za') then 'admin'
+          else public.connect_profiles.role
+        end;
 
   return new;
 end;

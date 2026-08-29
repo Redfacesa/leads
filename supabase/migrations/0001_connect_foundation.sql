@@ -70,8 +70,10 @@ create table if not exists public.connect_sources (
 );
 
 insert into public.connect_sources (name, type)
-values ('Organic — Website', 'organic')
-on conflict do nothing;
+select 'Organic — Website', 'organic'
+where not exists (
+  select 1 from public.connect_sources where name = 'Organic — Website' and type = 'organic'
+);
 
 -- ── Partners ──────────────────────────────────────────────────────────────────
 

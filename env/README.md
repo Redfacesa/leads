@@ -6,7 +6,7 @@ Copy the right template, fill in Supabase keys, then add to Vercel or use locall
 |------|--------------|-----|
 | `env/development.env.example` | Development | Local `.env.local` |
 | `env/preview.env.example` | Preview | PR / branch deploys |
-| `env/production.env.example` | Production | `connect.redfacepay.co.za` |
+| `env/production.env.example` | Production | `connect.redfacepay.co.za` or `leads-ten-steel.vercel.app` |
 
 ## Variables (all environments)
 
@@ -55,8 +55,9 @@ npm run env:pull:production
 
 Add to Supabase → Authentication → URL configuration:
 
-- **Site URL:** `https://connect.redfacepay.co.za`
+- **Site URL:** `https://connect.redfacepay.co.za` (or `https://leads-ten-steel.vercel.app` until domain is live)
 - **Redirect URLs:**
   - `https://connect.redfacepay.co.za/auth/callback`
+  - `https://leads-ten-steel.vercel.app/auth/callback`
   - `http://localhost:3000/auth/callback`
   - `https://*.vercel.app/auth/callback` (preview)

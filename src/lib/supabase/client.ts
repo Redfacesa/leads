@@ -1,10 +1,26 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createBrowserClient, type SupabaseClient } from "@supabase/ssr";
+import { isSupabaseConfigured } from "@/lib/env";
 
-export function createClient() {
+let client: SupabaseClient | null = null;
+
+export function createClient(): SupabaseClient {
+  if (client) return client;
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+
+  if (!isSupabaseConfigured() || !url || !key) {
+    throw new Error("RedFace Connect is not configured yet. Set Supabase environment variables in Vercel.");
   }
-  return createBrowserClient(url, key);
+
+  client = createBrowserClient(url, key);
+  return client;
+}
+
+export function tryCreateClient(): SupabaseClient | null {
+  try {
+    return createClient();
+  } catch {
+    return null;
+  }
 }

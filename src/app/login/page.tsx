@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/env";
+import { SetupNotice } from "@/components/setup/setup-notice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +23,10 @@ function LoginForm() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!isSupabaseConfigured()) {
+      setError("Supabase is not configured on this deployment yet.");
+      return;
+    }
     setLoading(true);
     setError(null);
     const supabase = createClient();
@@ -41,6 +47,11 @@ function LoginForm() {
         <CardDescription>Admin and partner sign in</CardDescription>
       </CardHeader>
       <CardContent>
+        {!isSupabaseConfigured() && (
+          <div className="mb-4">
+            <SetupNotice />
+          </div>
+        )}
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
@@ -51,7 +62,7 @@ function LoginForm() {
             <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
           {error && <p className="text-sm text-red-400">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !isSupabaseConfigured()}>
             {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>

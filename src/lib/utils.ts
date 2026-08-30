@@ -57,6 +57,13 @@ export const DEBT_BANDS = [
 ] as const;
 
 export const LEAD_STATUS_LABELS: Record<string, string> = {
+  pending: "Pending",
+  pending_review: "Pending review",
+  active: "Active",
+  suspended: "Suspended",
+  archived: "Archived",
+  accepted: "Accepted",
+  paid: "Paid",
   new: "New",
   verifying: "Verifying",
   verified: "Verified",

@@ -191,6 +191,9 @@ export async function deliverLeadToPartner(
     price: match.price,
   });
 
+  const { creditLeadPartnerCommission } = await import("@/lib/lead-partners/commissions");
+  await creditLeadPartnerCommission(admin, leadId, match.price, "assignment", assignment.id);
+
   return { ok: true, assignmentId: assignment.id };
 }
 

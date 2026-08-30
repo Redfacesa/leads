@@ -85,12 +85,25 @@ Debt assistance rules only match **verified** partners.
 
 Migration `0004_connect_premium` and `0005` applied to production.
 
-## 8. Health check
+## 9. Lead Partner Network
+
+1. Apply migration `0007_connect_lead_partner_network.sql` to production (from `leads` repo):
+   ```bash
+   cd leads && npx supabase db query --linked -f supabase/migrations/0007_connect_lead_partner_network.sql
+   npx supabase migration repair --linked --status applied 0007
+   ```
+2. Public landing → **Apply as partner** → `/partners-network/apply`
+3. Admin → `/dashboard/lead-partners` → Approve agency, set commission rate
+4. Partner signs in → `/partners-network/submit` → Submit lead with consent attestation
+5. Admin → `/dashboard/submissions` → Accept or reject (accept creates inventory lead)
+6. When lead sells (match or marketplace), partner earns commission → `/partners-network/earnings`
+
+## 10. Health check
 
 `GET /api/health` should return `{ ok: true, supabaseConfigured: true }`
 
 ## Database status
 
-Connect schema applied to production (migrations `0001`–`0004`).
+Connect schema applied to production (migrations `0001`–`0006`; apply `0007` for Lead Partner Network).
 
 Categories seeded: Personal Finance, Debt Assistance, Credit Help, Business Funding.

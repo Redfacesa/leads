@@ -200,11 +200,13 @@ TRAFFIC → CAMPAIGN → LANDING PAGE → FORM → CONSENT
 - [ ] AI qualification assist (explain, never invent)
 - [ ] CRM webhooks (started)
 
-### Phase 4 — Lead Partner Network
+### Phase 4 — Lead Partner Network (in progress)
 
-- [ ] Partner campaign approval
-- [ ] Commission rules
-- [ ] Quality gate before inventory
+- [x] Partner application + admin approval (`/partners-network/apply`, `/dashboard/lead-partners`)
+- [x] Submission queue + quality gate (`/api/lead-partners/submit`, `/dashboard/submissions`)
+- [x] Commission on lead sale (`connect_credit_lead_partner_commission`)
+- [ ] Partner campaign admin UI (assign campaigns in dashboard)
+- [ ] Payout / bank details for partner earnings
 
 ---
 

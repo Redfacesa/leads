@@ -37,9 +37,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(login);
   }
 
+  if (path.startsWith("/partners-network") && !user) {
+    const login = new URL("/login", request.url);
+    login.searchParams.set("next", path);
+    return NextResponse.redirect(login);
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/client/:path*", "/partner/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/admin/:path*",
+    "/client/:path*",
+    "/partner/:path*",
+    "/partners-network/:path*",
+  ],
 };

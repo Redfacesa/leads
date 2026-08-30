@@ -119,21 +119,26 @@ export function RedLeadsLanding() {
         </div>
       </section>
 
-      {/* For partners - Phase 4 teaser */}
+      {/* Lead Partner Network */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="rounded-lg border border-[#262626] bg-[#111] p-8 sm:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-xl">
-              <p className="text-sm uppercase tracking-wider text-[#8c8c8c]">Phase 2+</p>
+              <p className="text-sm uppercase tracking-wider text-[#8c8c8c]">Lead Partner Network</p>
               <h2 className="mt-2 text-2xl font-bold text-white">Become a Lead Partner</h2>
               <p className="mt-3 text-[#bdbdbd]">
-                Approved agencies and marketers will run campaigns, submit leads, and earn revenue
-                under Red Leads quality and compliance checks. Coming after marketplace launch.
+                Approved agencies and marketers run campaigns, submit qualified leads, and earn commission
+                when those leads sell. Every submission passes Red Leads quality and POPIA checks.
               </p>
             </div>
-            <Button asChild variant="outline" disabled>
-              <span>Partner network (soon)</span>
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild variant="outline">
+                <Link href="/partners-network/apply">Apply as partner</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/partners-network">Partner portal</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

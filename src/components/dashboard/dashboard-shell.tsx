@@ -17,6 +17,8 @@ import {
   ShoppingBag,
   Receipt,
   Building2,
+  Handshake,
+  ClipboardCheck,
 } from "lucide-react";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 
@@ -26,6 +28,8 @@ const nav = [
   { href: "/dashboard/campaigns", label: "Campaigns", icon: Megaphone },
   { href: "/dashboard/categories", label: "Categories", icon: Tags },
   { href: "/dashboard/clients", label: "Clients", icon: Building2 },
+  { href: "/dashboard/lead-partners", label: "Lead partners", icon: Handshake },
+  { href: "/dashboard/submissions", label: "Submissions", icon: ClipboardCheck },
   { href: "/dashboard/matching", label: "Matching", icon: GitBranch },
   { href: "/dashboard/marketplace", label: "Marketplace", icon: ShoppingBag },
   { href: "/dashboard/orders", label: "Orders", icon: Receipt },

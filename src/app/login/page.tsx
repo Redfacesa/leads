@@ -44,7 +44,7 @@ function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Red Leads</CardTitle>
-        <CardDescription>Admin and client sign in</CardDescription>
+        <CardDescription>Admin, client, and lead partner sign in</CardDescription>
       </CardHeader>
       <CardContent>
         {!isSupabaseConfigured() && (
@@ -70,6 +70,8 @@ function LoginForm() {
           <Link href="/" className="hover:text-white">Back to public site</Link>
           {" · "}
           <Link href="/signup" className="text-[#dc2626] hover:underline">Create client account</Link>
+          {" · "}
+          <Link href="/partners-network/apply" className="text-[#dc2626] hover:underline">Lead partner apply</Link>
         </p>
       </CardContent>
     </Card>

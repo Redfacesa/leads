@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { SetupGate } from "@/components/setup/setup-notice";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
-import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 import { cn } from "@/lib/utils";
 
 const nav = [

@@ -3,6 +3,12 @@ import { requireAdminSession } from "@/lib/auth/admin";
 import { createServiceClient } from "@/lib/supabase/server";
 import { deliverLeadToPartner } from "@/lib/matching/engine";
 
+const ERROR_MESSAGES: Record<string, string> = {
+  insufficient_balance: "Partner wallet balance is too low. Top up in Revenue before assigning.",
+  billing_suspended: "Partner billing account is suspended.",
+  assignment_failed: "Could not create assignment.",
+};
+
 export async function POST(req: NextRequest) {
   const auth = await requireAdminSession();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
@@ -19,16 +25,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Partner not active" }, { status: 400 });
   }
 
-  const { data: lead } = await admin.from("connect_leads").select("lead_reference").eq("id", leadId).maybeSingle();
+  const { data: lead } = await admin.from("connect_leads").select("lead_reference, status").eq("id", leadId).maybeSingle();
+  if (!lead) return NextResponse.json({ error: "Lead not found" }, { status: 404 });
 
   const delivered = await deliverLeadToPartner(admin, leadId, {
     partnerId,
     partnerName: partner.business_name,
     ruleId: null,
     price: Number(price ?? 100),
-  }, { leadReference: lead?.lead_reference });
+  }, { leadReference: lead.lead_reference });
 
-  if (!delivered) return NextResponse.json({ error: "Assignment failed (check partner wallet balance)" }, { status: 500 });
+  if (!delivered.ok) {
+    return NextResponse.json(
+      { error: ERROR_MESSAGES[delivered.error] ?? delivered.error },
+      { status: 402 }
+    );
+  }
 
   await admin.from("connect_audit_logs").insert({
     action: "lead.assigned",

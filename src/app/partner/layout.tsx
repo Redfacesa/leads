@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { SetupGate } from "@/components/setup/setup-notice";
+import { NotificationBell } from "@/components/dashboard/notification-bell";
 
 export default function PartnerLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,12 +13,15 @@ export default function PartnerLayout({ children }: { children: ReactNode }) {
               <p className="text-xs uppercase tracking-wider text-[#8c8c8c]">RedFace Connect</p>
               <p className="text-lg font-semibold text-white">Partner Portal</p>
             </div>
-            <nav className="flex items-center gap-4 text-sm">
-              <Link href="/partner" className="text-[#bdbdbd] hover:text-white">Overview</Link>
-              <Link href="/partner/leads" className="text-[#bdbdbd] hover:text-white">Leads</Link>
-              <Link href="/partner/billing" className="text-[#bdbdbd] hover:text-white">Billing</Link>
-              <Link href="/partner/webhooks" className="text-[#bdbdbd] hover:text-white">Webhooks</Link>
-              <Link href="/" className="text-[#bdbdbd] hover:text-white">Public site</Link>
+            <nav className="flex items-center gap-3 text-sm">
+              <Link href="/partner" className="hidden sm:inline text-[#bdbdbd] hover:text-white">Overview</Link>
+              <Link href="/partner/leads" className="hidden sm:inline text-[#bdbdbd] hover:text-white">Leads</Link>
+              <Link href="/partner/billing" className="hidden sm:inline text-[#bdbdbd] hover:text-white">Billing</Link>
+              <Link href="/partner/webhooks" className="hidden md:inline text-[#bdbdbd] hover:text-white">Webhooks</Link>
+              <NotificationBell />
+              <form action="/auth/signout" method="post">
+                <button type="submit" className="text-[#bdbdbd] hover:text-white">Sign out</button>
+              </form>
             </nav>
           </div>
         </header>

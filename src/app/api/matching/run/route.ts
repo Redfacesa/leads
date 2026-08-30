@@ -26,8 +26,31 @@ export async function POST(req: NextRequest) {
   );
   const regulated = !!category?.requires_regulated_partner;
 
-  const match = await autoMatchAndDeliver(admin, lead, regulated);
-  if (!match) return NextResponse.json({ ok: false, matched: false });
+  let matchLead = { ...lead, lead_reference: undefined as string | undefined };
+  if (!["qualified", "verified"].includes(lead.status)) {
+    if (lead.lead_score >= 70) {
+      await admin.from("connect_leads").update({ status: "qualified" }).eq("id", leadId);
+      matchLead = { ...matchLead, status: "qualified" };
+    } else {
+      return NextResponse.json({
+        ok: false,
+        matched: false,
+        error: "Lead must be qualified (score 70+) before auto-match",
+      });
+    }
+  }
+
+  const { data: refRow } = await admin.from("connect_leads").select("lead_reference").eq("id", leadId).maybeSingle();
+  matchLead.lead_reference = refRow?.lead_reference;
+
+  const match = await autoMatchAndDeliver(admin, matchLead, regulated);
+  if (!match) {
+    return NextResponse.json({
+      ok: false,
+      matched: false,
+      error: "No matching rule found or partner wallet insufficient",
+    });
+  }
 
   return NextResponse.json({ ok: true, matched: true, partnerName: match.partnerName, price: match.price });
 }

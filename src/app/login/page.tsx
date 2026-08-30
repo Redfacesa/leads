@@ -68,6 +68,8 @@ function LoginForm() {
         </form>
         <p className="mt-4 text-center text-sm text-[#8c8c8c]">
           <Link href="/" className="hover:text-white">Back to public site</Link>
+          {" · "}
+          <Link href="/signup" className="text-[#dc2626] hover:underline">Partner registration</Link>
         </p>
       </CardContent>
     </Card>

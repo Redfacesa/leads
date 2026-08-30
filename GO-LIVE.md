@@ -79,8 +79,11 @@ Debt assistance rules only match **verified** partners.
 5. **Partner onboarding** — `/partner/apply` self-service application
 6. **Partner portal** — `/partner/billing`, `/partner/webhooks`
 7. **Webhooks** — HMAC-signed `lead.delivered` events to partner endpoints
+8. **Partner signup** — `/signup` (account + business application)
+9. **Lead timeline** — status history and audit on lead detail
+10. **Legal pages** — `/terms` and `/privacy` (POPIA-aware)
 
-Migration `0004_connect_premium` applied to production.
+Migration `0004_connect_premium` and `0005` applied to production.
 
 ## 8. Health check
 

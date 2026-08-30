@@ -144,7 +144,7 @@ export async function deliverLeadToPartner(
   leadId: string,
   match: MatchResult,
   meta?: { leadReference?: string }
-): Promise<{ assignmentId: string } | null> {
+): Promise<{ ok: true; assignmentId: string } | { ok: false; error: string }> {
   const { data: assignment, error } = await admin
     .from("connect_lead_assignments")
     .insert({
@@ -158,12 +158,12 @@ export async function deliverLeadToPartner(
     .select("id")
     .single();
 
-  if (error || !assignment) return null;
+  if (error || !assignment) return { ok: false, error: "assignment_failed" };
 
   const charge = await chargeLeadDelivery(admin, match.partnerId, leadId, assignment.id, match.price);
   if (!charge.ok) {
     await admin.from("connect_lead_assignments").delete().eq("id", assignment.id);
-    return null;
+    return { ok: false, error: charge.error ?? "insufficient_balance" };
   }
 
   await admin.from("connect_leads").update({ status: "delivered" }).eq("id", leadId);
@@ -191,7 +191,7 @@ export async function deliverLeadToPartner(
     price: match.price,
   });
 
-  return { assignmentId: assignment.id };
+  return { ok: true, assignmentId: assignment.id };
 }
 
 export async function autoMatchAndDeliver(
@@ -207,5 +207,5 @@ export async function autoMatchAndDeliver(
   const delivered = await deliverLeadToPartner(admin, lead.id, match, {
     leadReference: lead.lead_reference,
   });
-  return delivered ? match : null;
+  return delivered.ok ? match : null;
 }

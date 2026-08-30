@@ -63,8 +63,16 @@ export function LeadApplicationForm({ categories }: { categories: ConnectLeadCat
         }),
       });
       const data = await res.json();
+      if (res.status === 409) {
+        throw new Error(data.error ?? "We already received a recent enquiry from this number.");
+      }
       if (!res.ok) throw new Error(data.error ?? "Submission failed");
-      router.push(`/apply/success?ref=${encodeURIComponent(data.leadReference)}`);
+      const params = new URLSearchParams({ ref: data.leadReference });
+      if (data.matched) {
+        params.set("matched", "1");
+        if (data.partnerName) params.set("partner", data.partnerName);
+      }
+      router.push(`/apply/success?${params.toString()}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { createClient } from "@/lib/supabase/client";
+import { relationOne } from "@/lib/supabase/relations";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface OrderRow {
@@ -11,8 +12,8 @@ interface OrderRow {
   exclusive: boolean;
   payment_status: string;
   purchased_at: string;
-  connect_leads?: { lead_reference: string };
-  connect_partners?: { business_name: string };
+  leadReference: string | null;
+  clientName: string | null;
 }
 
 export default function OrdersPage() {
@@ -26,7 +27,21 @@ export default function OrdersPage() {
         .select("*, connect_leads(lead_reference), connect_partners(business_name)")
         .order("purchased_at", { ascending: false })
         .limit(100);
-      setOrders((data ?? []) as OrderRow[]);
+      setOrders(
+        (data ?? []).map((row) => ({
+          id: row.id,
+          price: Number(row.price),
+          exclusive: row.exclusive,
+          payment_status: row.payment_status,
+          purchased_at: row.purchased_at,
+          leadReference: relationOne(
+            (row as { connect_leads?: { lead_reference: string } | { lead_reference: string }[] }).connect_leads
+          )?.lead_reference ?? null,
+          clientName: relationOne(
+            (row as { connect_partners?: { business_name: string } | { business_name: string }[] }).connect_partners
+          )?.business_name ?? null,
+        }))
+      );
     }
     load();
   }, []);
@@ -57,8 +72,8 @@ export default function OrdersPage() {
               ) : (
                 orders.map((o) => (
                   <tr key={o.id} className="border-t border-[#262626]">
-                    <td className="px-4 py-3 font-mono text-white">{o.connect_leads?.lead_reference}</td>
-                    <td className="px-4 py-3 text-[#bdbdbd]">{o.connect_partners?.business_name}</td>
+                    <td className="px-4 py-3 font-mono text-white">{o.leadReference}</td>
+                    <td className="px-4 py-3 text-[#bdbdbd]">{o.clientName}</td>
                     <td className="px-4 py-3 text-white">{formatCurrency(Number(o.price))}</td>
                     <td className="px-4 py-3 text-[#bdbdbd]">{o.exclusive ? "Yes" : "No"}</td>
                     <td className="px-4 py-3 capitalize text-[#bdbdbd]">{o.payment_status}</td>

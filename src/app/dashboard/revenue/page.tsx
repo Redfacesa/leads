@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { relationOne } from "@/lib/supabase/relations";
 import type { ConnectPartner } from "@/lib/types";
 
 interface WalletRow {
@@ -53,7 +54,17 @@ export default function RevenuePage() {
     const charged = transactions.filter((t) => t.type === "lead_charge").reduce((s, t) => s + Number(t.amount), 0);
 
     setTotals({ delivered, revenue, deposits, charged });
-    setWallets((accounts ?? []) as WalletRow[]);
+    setWallets(
+      (accounts ?? []).map((row) => ({
+        partner_id: row.partner_id,
+        balance: Number(row.balance),
+        credit_limit: Number(row.credit_limit),
+        status: row.status,
+        connect_partners: relationOne(
+          (row as { connect_partners?: { business_name: string } | { business_name: string }[] }).connect_partners
+        ),
+      }))
+    );
     setPartners((partnerList ?? []) as ConnectPartner[]);
     setRecentTx(transactions);
   }

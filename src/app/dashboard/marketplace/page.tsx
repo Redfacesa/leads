@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
+import { relationOne } from "@/lib/supabase/relations";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface ListingRow {
@@ -15,8 +16,8 @@ interface ListingRow {
   status: string;
   preview_province: string | null;
   listed_at: string;
-  connect_lead_categories?: { name: string };
-  connect_leads?: { lead_reference: string };
+  categoryName: string | null;
+  leadReference: string | null;
 }
 
 export default function AdminMarketplacePage() {
@@ -32,7 +33,22 @@ export default function AdminMarketplacePage() {
       .select("*, connect_lead_categories(name), connect_leads(lead_reference)")
       .order("listed_at", { ascending: false })
       .limit(50);
-    setListings((data ?? []) as ListingRow[]);
+    setListings(
+      (data ?? []).map((row) => ({
+        id: row.id,
+        lead_id: row.lead_id,
+        price: Number(row.price),
+        status: row.status,
+        preview_province: row.preview_province,
+        listed_at: row.listed_at,
+        categoryName: relationOne(
+          (row as { connect_lead_categories?: { name: string } | { name: string }[] }).connect_lead_categories
+        )?.name ?? null,
+        leadReference: relationOne(
+          (row as { connect_leads?: { lead_reference: string } | { lead_reference: string }[] }).connect_leads
+        )?.lead_reference ?? null,
+      }))
+    );
   }
 
   useEffect(() => {
@@ -101,8 +117,8 @@ export default function AdminMarketplacePage() {
               ) : (
                 listings.map((row) => (
                   <tr key={row.id} className="border-t border-[#262626]">
-                    <td className="px-4 py-3 font-mono text-white">{row.connect_leads?.lead_reference ?? row.lead_id.slice(0, 8)}</td>
-                    <td className="px-4 py-3 text-[#bdbdbd]">{row.connect_lead_categories?.name}</td>
+                    <td className="px-4 py-3 font-mono text-white">{row.leadReference ?? row.lead_id.slice(0, 8)}</td>
+                    <td className="px-4 py-3 text-[#bdbdbd]">{row.categoryName}</td>
                     <td className="px-4 py-3 text-[#bdbdbd]">{row.preview_province}</td>
                     <td className="px-4 py-3 text-white">{formatCurrency(Number(row.price))}</td>
                     <td className="px-4 py-3 capitalize text-[#bdbdbd]">{row.status}</td>

@@ -4,12 +4,12 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BRAND } from "@/lib/branding";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -71,8 +71,9 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>{BRAND.name} — Partner registration</CardTitle>
+        <CardHeader className="items-center text-center">
+          <RedLeadsLogo size="md" href={undefined} className="mb-2" />
+          <CardTitle>Client registration</CardTitle>
           <CardDescription>
             {step === "account" ? "Create your account" : "Tell us about your business"}
           </CardDescription>

@@ -9,6 +9,10 @@ export const BRAND = {
   adminEmail: "info@redfacepay.co.za",
   leadPrefix: "RL-LD",
   ecosystem: "RedFace",
+  /** Official logo (RL monogram + RED LEADS wordmark) */
+  logoPath: "/brand/red-leads-logo.png",
+  /** Primary brand red from official logo */
+  red: "#E30613",
 } as const;
 
 export const DISCLAIMERS = {

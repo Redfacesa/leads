@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SetupGate } from "@/components/setup/setup-notice";
-import { BRAND } from "@/lib/branding";
+import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -24,10 +24,8 @@ export function LeadPartnerShell({ children }: { children: ReactNode }) {
         <header className="border-b border-[#262626] bg-[#111]">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
             <div>
-              <Link href="/" className="text-xs uppercase tracking-wider text-[#8c8c8c] hover:text-white">
-                {BRAND.name}
-              </Link>
-              <p className="text-lg font-semibold text-white">Lead Partner Network</p>
+              <RedLeadsLogo size="sm" />
+              <p className="mt-2 text-lg font-semibold text-white">Lead Partner Network</p>
             </div>
             <nav className="hidden sm:flex items-center gap-2 text-sm">
               {nav.map(({ href, label }) => (

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 import { BRAND, DISCLAIMERS } from "@/lib/branding";
 
 const STEPS = [
@@ -41,8 +42,8 @@ export function RedLeadsLanding() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wider text-[#dc2626]">{BRAND.name}</p>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <RedLeadsLogo size="lg" href={undefined} className="mb-6" priority />
+          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
             {BRAND.tagline}
           </h1>
           <p className="mt-6 text-lg text-[#bdbdbd]">{BRAND.subtitle}</p>

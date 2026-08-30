@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RedLeadsLanding } from "@/components/public/red-leads-landing";
+import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 import { BRAND } from "@/lib/branding";
 
 export default function HomePage() {
@@ -7,9 +8,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#0a0a0a]">
       <header className="sticky top-0 z-50 border-b border-[#262626] bg-[#111]">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/" className="text-xl font-bold text-white">
-            🔴 {BRAND.name}
-          </Link>
+          <RedLeadsLogo size="sm" priority />
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/apply" className="text-[#bdbdbd] hover:text-white">Enquire</Link>
             <Link href="/services" className="hidden sm:inline text-[#bdbdbd] hover:text-white">Services</Link>

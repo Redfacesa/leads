@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   },
   description: BRAND.subtitle,
   metadataBase: new URL(`https://${BRAND.domain}`),
+  icons: {
+    icon: BRAND.logoPath,
+    apple: BRAND.logoPath,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

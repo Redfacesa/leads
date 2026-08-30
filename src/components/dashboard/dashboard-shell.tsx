@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { BRAND } from "@/lib/branding";
 import {
   LayoutDashboard,
   Users,
@@ -21,6 +20,7 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
+import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -45,8 +45,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <header className="border-b border-[#262626] bg-[#111]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <div>
-            <p className="text-xs uppercase tracking-wider text-[#dc2626]">{BRAND.name} Admin</p>
-            <h1 className="text-lg font-semibold text-white">Command centre</h1>
+            <RedLeadsLogo size="sm" />
+            <p className="mt-2 text-lg font-semibold text-white">Command centre</p>
           </div>
           <div className="flex items-center gap-3">
             <NotificationBell />

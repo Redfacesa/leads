@@ -11,7 +11,8 @@ import { SetupNotice } from "@/components/setup/setup-notice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { RedLeadsLogo } from "@/components/brand/red-leads-logo";
 
 function LoginForm() {
   const router = useRouter();
@@ -42,8 +43,8 @@ function LoginForm() {
 
   return (
     <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Red Leads</CardTitle>
+      <CardHeader className="items-center text-center">
+        <RedLeadsLogo size="md" href={undefined} className="mb-2" />
         <CardDescription>Admin, client, and lead partner sign in</CardDescription>
       </CardHeader>
       <CardContent>

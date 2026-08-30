@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { BRAND } from "@/lib/branding";
 import {
   LayoutDashboard,
   Users,
@@ -12,16 +13,23 @@ import {
   Wallet,
   BarChart3,
   LogOut,
+  Tags,
+  ShoppingBag,
+  Receipt,
+  Building2,
 } from "lucide-react";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 
 const nav = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/leads", label: "Leads", icon: Users },
-  { href: "/dashboard/partners", label: "Partners", icon: Users },
-  { href: "/dashboard/matching", label: "Matching", icon: GitBranch },
   { href: "/dashboard/campaigns", label: "Campaigns", icon: Megaphone },
-  { href: "/dashboard/revenue", label: "Revenue", icon: Wallet },
+  { href: "/dashboard/categories", label: "Categories", icon: Tags },
+  { href: "/dashboard/clients", label: "Clients", icon: Building2 },
+  { href: "/dashboard/matching", label: "Matching", icon: GitBranch },
+  { href: "/dashboard/marketplace", label: "Marketplace", icon: ShoppingBag },
+  { href: "/dashboard/orders", label: "Orders", icon: Receipt },
+  { href: "/dashboard/revenue", label: "Payments", icon: Wallet },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
@@ -33,14 +41,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <header className="border-b border-[#262626] bg-[#111]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <div>
-            <p className="text-xs uppercase tracking-wider text-[#8c8c8c]">RedFace Connect</p>
-            <h1 className="text-lg font-semibold text-white">Admin Dashboard</h1>
+            <p className="text-xs uppercase tracking-wider text-[#dc2626]">{BRAND.name} Admin</p>
+            <h1 className="text-lg font-semibold text-white">Command centre</h1>
           </div>
           <div className="flex items-center gap-3">
             <NotificationBell />
-            <Link href="/" className="text-sm text-[#8c8c8c] hover:text-white">
-              Public site
-            </Link>
+            <Link href="/" className="text-sm text-[#8c8c8c] hover:text-white">Public site</Link>
             <form action="/auth/signout" method="post">
               <button type="submit" className="inline-flex items-center gap-2 text-sm text-[#8c8c8c] hover:text-white">
                 <LogOut className="h-4 w-4" />

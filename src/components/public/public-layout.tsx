@@ -1,13 +1,15 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { BRAND } from "@/lib/branding";
+
 export function PublicLayout({ children, title }: { children: ReactNode; title?: string }) {
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <header className="border-b border-[#262626] bg-[#111]">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6">
           <Link href="/" className="text-lg font-semibold text-white">
-            RedFace <span className="text-[#dc2626]">Connect</span>
+            🔴 {BRAND.name}
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/apply" className="text-[#bdbdbd] hover:text-white">Apply</Link>

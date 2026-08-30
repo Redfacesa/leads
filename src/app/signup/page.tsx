@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { BRAND } from "@/lib/branding";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +64,7 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/partner");
+    router.push("/client");
     router.refresh();
   }
 
@@ -71,7 +72,7 @@ export default function SignupPage() {
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Partner registration</CardTitle>
+          <CardTitle>{BRAND.name} — Partner registration</CardTitle>
           <CardDescription>
             {step === "account" ? "Create your account" : "Tell us about your business"}
           </CardDescription>

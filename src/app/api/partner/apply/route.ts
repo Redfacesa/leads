@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
   await admin
     .from("connect_profiles")
-    .update({ partner_id: partner.id, role: "partner_owner" })
+    .update({ partner_id: partner.id, role: "client_owner" })
     .eq("id", user.id);
 
   await admin.from("connect_audit_logs").insert({

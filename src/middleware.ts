@@ -31,13 +31,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(login);
   }
 
-  if (path.startsWith("/partner") && !user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if ((path.startsWith("/client") || path.startsWith("/partner")) && !user) {
+    const login = new URL("/login", request.url);
+    login.searchParams.set("next", path.replace(/^\/partner/, "/client"));
+    return NextResponse.redirect(login);
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/partner/:path*"],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/client/:path*", "/partner/:path*"],
 };

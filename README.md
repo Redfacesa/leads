@@ -1,135 +1,59 @@
-# RedFace Connect
+# Red Leads
 
-**Financial lead capture, qualification, consent, and partner distribution for South Africa.**
+**South Africa's Lead Generation & Lead Marketplace Platform**
 
-RedFace Connect is a standalone application in the RedFace ecosystem. It operates enquiry infrastructure only: it does **not** approve credit, debt review, or lending decisions.
+> Real Leads. Real People. Real Opportunities.
 
-## v0.1 scope
+Red Leads generates, captures, qualifies, manages and distributes high-intent leads to businesses. It is the **Lead Operating System** in the RedFace ecosystem.
 
-- Public multi-step enquiry form (`/apply`)
-- Lead quality scoring (not a credit score)
-- POPIA-ready consent recording
-- Duplicate detection (7-day phone window)
-- Admin dashboard: leads, partners, manual assignment, revenue view
-- Partner billing skeleton (assignment price tracking)
+**Domain:** [redleads.co.za](https://redleads.co.za) (configure on Vercel)
+
+## Platform sides
+
+| Side | URL | Status |
+|------|-----|--------|
+| Public website | `/` | Phase 1 |
+| Lead capture | `/apply` | Phase 1 |
+| Red Leads Admin | `/dashboard` | Phase 1 |
+| Client dashboard | `/client` | Phase 1 |
+| Lead marketplace | `/client/marketplace` | Phase 2 (foundation live) |
+| Lead partner network | — | Phase 4 |
+
+Full product blueprint: [`docs/RED-LEADS-BLUEPRINT.md`](docs/RED-LEADS-BLUEPRINT.md)
 
 ## Stack
 
-- **Next.js 15** (App Router, TypeScript)
-- **Tailwind CSS 4**
-- **Supabase** (PostgreSQL, Auth, RLS, Edge-ready)
-- **Vercel** deployment target
+- Next.js 15 · TypeScript · Tailwind 4
+- Supabase (shared RedFace hub `bpzzgilwlkghgfkvkkxx`, tables prefixed `connect_*`)
+- Vercel
 
 ## Quick start
-
-### 1. Clone and install
 
 ```bash
 git clone https://github.com/Redfacesa/leads.git
 cd leads
 npm install
-cp .env.example .env.local
-```
-
-### 2. Create Supabase project
-
-1. Create a new project at [supabase.com](https://supabase.com) (recommended: dedicated Connect project)
-2. Copy project URL, anon key, and service role key
-3. Use env templates:
-   - Local: `cp env/development.env.example .env.local`
-   - Vercel Production: `env/production.env.example`
-   - Vercel Preview: `env/preview.env.example`
-4. Set `CONNECT_ADMIN_EMAILS=info@redfacepay.co.za`
-
-See **`env/README.md`** for full Vercel setup.
-
-### 3. Apply database migrations
-
-```bash
-npx supabase link --project-ref YOUR_PROJECT_REF
-npx supabase db push
-```
-
-Or run `supabase/migrations/0001_connect_foundation.sql` and `0002_connect_auth_profiles.sql` in the SQL editor.
-
-### 4. Create admin user
-
-1. Supabase Dashboard → Authentication → Add user (email + password)
-2. Ensure email is listed in `CONNECT_ADMIN_EMAILS`
-3. Profile row is auto-created via `connect_handle_new_user` trigger
-
-Or manually:
-
-```sql
-insert into public.connect_profiles (id, email, role)
-select id, email, 'admin' from auth.users where email = 'info@redfacepay.co.za'
-on conflict (id) do update set role = 'admin';
-```
-
-### 5. Run locally
-
-```bash
+cp env/development.env.example .env.local
 npm run dev
 ```
 
-- Public site: [http://localhost:3000](http://localhost:3000)
-- Apply form: [http://localhost:3000/apply](http://localhost:3000/apply)
-- Admin: [http://localhost:3000/dashboard](http://localhost:3000/dashboard)
+Apply migrations: `npm run db:push` or see `GO-LIVE.md`.
 
-## Repository structure
+## Key routes
 
-```text
-src/
-  app/
-    apply/          Public enquiry form
-    dashboard/      RedFace admin
-    partner/        Partner portal (v0.2)
-    api/            Lead submit + admin actions
-  components/
-  lib/
-    scoring.ts      Lead quality score
-    supabase/       Clients
-supabase/
-  migrations/       PostgreSQL schema + RLS
-```
+- `/` — Red Leads landing page
+- `/apply` — Consumer enquiry funnel
+- `/signup` — Client registration
+- `/services` — Lead generation as a service
+- `/dashboard` — Admin command centre
+- `/client` — Client dashboard (leads, marketplace, billing)
 
-## Lead flow (v0.1)
+## Compliance
 
-```text
-Consumer submits /apply
-  → consent recorded
-  → duplicate check
-  → quality score
-  → status: new / verified / qualified
-Admin reviews in /dashboard/leads
-  → assign partner manually
-  → status: delivered
-Partner contacts consumer (off-platform v0.1)
-```
-
-## Compliance notes
-
-- Consent text version: `v0.1` (legal review required before ads)
-- No guaranteed approval marketing
-- Regulated categories (debt assistance) require verified partners before lead delivery
-- First-party leads only (no scraped lists)
-
-## Roadmap
-
-| Version | Features |
-|---------|----------|
-| **v0.1** | Public form, admin dashboard, manual assignment |
-| **v0.2** | Partner login, auto-matching rules, campaigns UI, wallet billing |
-| **v0.3** | API/webhooks, white-label forms, RedFace Pay integration |
-
-## Deploy to Vercel
-
-1. Import `Redfacesa/leads` in Vercel
-2. Add environment variables from `env/production.env.example` (Production scope)
-3. Add preview variables from `env/preview.env.example` (Preview scope)
-4. Set production domain: `connect.redfacepay.co.za`
-5. Configure Supabase Auth redirect URLs (see `env/README.md`)
-6. Apply migrations to production Supabase
+- First-party consent-based leads only (POPIA)
+- No credit bureau list scraping
+- Consent + audit trail on every enquiry
+- Marketplace previews hide PII until purchase
 
 ## License
 

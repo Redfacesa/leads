@@ -68,10 +68,10 @@ export default function PartnersPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white">Partners</h2>
-            <p className="text-[#8c8c8c]">Approved financial service businesses</p>
+            <h2 className="text-2xl font-bold text-white">Clients</h2>
+            <p className="text-[#8c8c8c]">Businesses buying and receiving leads</p>
           </div>
-          <Button onClick={() => setShowForm(!showForm)}>{showForm ? "Cancel" : "+ Add partner"}</Button>
+          <Button onClick={() => setShowForm(!showForm)}>{showForm ? "Cancel" : "+ Add client"}</Button>
         </div>
 
         {showForm && (

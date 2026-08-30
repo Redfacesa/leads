@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { BRAND } from "@/lib/branding";
 
 export const metadata: Metadata = {
-  title: "RedFace Connect",
-  description: "Connecting South Africans with relevant financial service providers.",
+  title: {
+    default: `${BRAND.name} | ${BRAND.tagline}`,
+    template: `%s | ${BRAND.name}`,
+  },
+  description: BRAND.subtitle,
+  metadataBase: new URL(`https://${BRAND.domain}`),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

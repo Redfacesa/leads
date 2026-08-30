@@ -61,6 +61,9 @@ export const LEAD_STATUS_LABELS: Record<string, string> = {
   verifying: "Verifying",
   verified: "Verified",
   qualified: "Qualified",
+  available: "Available",
+  reserved: "Reserved",
+  sold: "Sold",
   matched: "Matched",
   delivered: "Delivered",
   contacted: "Contacted",
@@ -73,6 +76,8 @@ export const LEAD_STATUS_LABELS: Record<string, string> = {
   not_interested: "Not interested",
   not_eligible: "Not eligible",
   expired: "Expired",
+  archived: "Archived",
+  active: "Active",
 };
 
 export const CONSENT_TEXT_V01 =
